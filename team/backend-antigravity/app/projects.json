@@ -1,0 +1,48 @@
+[
+  {
+    "id": "01",
+    "title": "Sales Forecasting ML Pipeline",
+    "categories": ["Scientist", "Engineer"],
+    "tags": ["Machine Learning", "Python", "XGBoost"],
+    "accuracy": "94%",
+    "description": "Predicting Revenue with XGBoost regression on 3 years of data.",
+    "file": "Project_01_sales_forecasting.html",
+    "image": "Gemini_Generated_Image_a227gua227gua227.png"
+  },
+  {
+    "id": "02",
+    "title": "Customer Segmentation",
+    "categories": ["Analyst", "Scientist"],
+    "tags": ["Data Science", "Clustering", "K-Means"],
+    "description": "K-Means + RFM on 500K+ records — 6 personas driving 28% conversion lift.",
+    "file": "Project_02_customer_segmentation.html",
+    "image": "Gemini_Generated_Image_4xnp874xnp874xnp.png"
+  },
+  {
+    "id": "03",
+    "title": "Real-Time Analytics Dashboard",
+    "categories": ["Engineer", "Analyst"],
+    "tags": ["Data Engineering", "Kafka", "Spark"],
+    "description": "Kafka + Spark Streaming — sub-second latency on 1M+ daily events.",
+    "file": "Project_03_realtime_dashboard.html",
+    "image": "Gemini_Generated_Image_7zcxo27zcxo27zcx.png"
+  },
+  {
+    "id": "04",
+    "title": "Automated ETL Pipeline",
+    "categories": ["Engineer"],
+    "tags": ["Data Engineering", "Airflow", "Snowflake"],
+    "description": "Airflow DAGs → Snowflake nightly from 12 sources. Zero incidents for 8+ months.",
+    "file": "Project_04_etl_pipeline.html",
+    "image": "placeholder"
+  },
+  {
+    "id": "05",
+    "title": "Sentiment Analysis NLP Model",
+    "categories": ["Scientist"],
+    "tags": ["NLP", "Deep Learning", "BERT"],
+    "description": "Fine-tuned BERT on 200K reviews — 91% F1, deployed with FastAPI.",
+    "file": "Project_05_sentiment_analysis.html",
+    "image": "placeholder"
+  }
+]

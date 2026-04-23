@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V3: The Kinetic Intelligence Engine — Nagendra Singh</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #010103; --accent: #c8f04d; }
+        body { background: var(--bg); color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; margin: 0; }
+        canvas { position: fixed; top: 0; left: 0; z-index: 0; }
+        
+        .ui-overlay { position: relative; z-index: 10; pointer-events: none; }
+        .ui-overlay * { pointer-events: auto; }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.01);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 50px 100px -20px rgba(0,0,0,1);
+        }
+
+        /* High-End Typography */
+        .title-reveal { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+        .hero-name { font-size: clamp(3rem, 8vw, 6rem); font-weight: 800; line-height: 0.9; letter-spacing: -0.05em; }
+
+        /* Scanning Line Effect */
+        .scanline {
+            width: 100%; height: 2px; background: rgba(200, 240, 77, 0.2);
+            position: absolute; top: 0; left: 0; pointer-events: none;
+            animation: scan 4s linear infinite; z-index: 20;
+        }
+        @keyframes scan { 0% { top: -10%; } 100% { top: 110%; } }
+
+        .btn-premium {
+            background: #ffffff; color: #000; padding: 1.2rem 3rem; border-radius: 4px;
+            font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+        .btn-premium:hover {
+            background: var(--accent); transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 20px 40px rgba(200, 240, 77, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="scanline"></div>
+    <div id="canvas-container"></div>
+
+    <div class="ui-overlay min-h-screen flex flex-col justify-between p-12 md:p-20">
+        <!-- Top Nav -->
+        <nav class="flex justify-between items-start">
+            <div class="flex flex-col">
+                <div class="font-extrabold text-2xl tracking-tighter mb-2">NS.INTEL</div>
+                <div class="text-[9px] tracking-[0.4em] uppercase opacity-40">System Status: Optimal</div>
+            </div>
+            <div class="hidden md:flex gap-12 text-[10px] tracking-[0.3em] uppercase font-bold opacity-50">
+                <a href="#" class="hover:text-[#c8f04d] transition-colors">Engineering</a>
+                <a href="#" class="hover:text-[#c8f04d] transition-colors">Analysis</a>
+                <a href="#" class="hover:text-[#c8f04d] transition-colors">Science</a>
+            </div>
+        </nav>
+
+        <!-- Center Content -->
+        <div class="max-w-4xl">
+            <div class="mb-6 flex items-center gap-4">
+                <div class="w-12 h-[1px] bg-[#c8f04d]"></div>
+                <div class="text-[10px] tracking-[0.5em] uppercase text-[#c8f04d] font-bold">Data Architecture v3.0</div>
+            </div>
+            <div class="title-reveal">
+                <h1 class="hero-name mb-10 opacity-0 transform translate-y-20 transition-all duration-1000 ease-out" id="main-title">
+                    CRAFTING<br><span class="text-transparent" style="-webkit-text-stroke: 1px rgba(255,255,255,0.3)">INTELLIGENCE.</span>
+                </h1>
+            </div>
+            <p class="text-xl md:text-2xl font-light opacity-50 max-w-xl mb-12 leading-relaxed">
+                Transforming chaotic data streams into structural value for the world's leading enterprises.
+            </p>
+            <div class="flex gap-6">
+                <button class="btn-premium">View Enterprise Work</button>
+                <button class="text-[10px] tracking-[0.3em] uppercase font-bold border-b border-white/20 pb-2 hover:border-[#c8f04d] transition-all">Download Dossier</button>
+            </div>
+        </div>
+
+        <!-- Bottom Footer -->
+        <div class="flex justify-between items-end">
+            <div class="text-[10px] tracking-[0.2em] opacity-30">
+                © 2026 NAGENDRA SINGH<br>SURAT, IN // 21.1702° N, 72.8311° E
+            </div>
+            <div class="flex gap-6">
+                <!-- Social links simplified for brevity -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- High-Fidelity 3D Engine (Stitch) ---
+        let scene, camera, renderer, engineCore, rings = [], ambientStars;
+        
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.toneMapping = THREE.ReinhardToneMapping;
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Lighting for "Macro" Hardware feel
+            const mainLight = new THREE.PointLight(0xc8f04d, 5, 20);
+            mainLight.position.set(2, 3, 5);
+            scene.add(mainLight);
+
+            const blueLight = new THREE.PointLight(0x3b82f6, 3, 20);
+            blueLight.position.set(-5, -2, 2);
+            scene.add(blueLight);
+
+            // 1. The Core Monolith (Brushed Metal)
+            const coreGeo = new THREE.CylinderGeometry(0.8, 1, 4, 32);
+            const coreMat = new THREE.MeshStandardMaterial({ 
+                color: 0x111115, 
+                metalness: 0.9, 
+                roughness: 0.1,
+                envMapIntensity: 1
+            });
+            engineCore = new THREE.Mesh(coreGeo, coreMat);
+            engineCore.position.set(4, 0, 0); // Position to the right
+            scene.add(engineCore);
+
+            // 2. The Data Rings (Frosted Glass & Emissive)
+            for(let i=0; i<3; i++) {
+                const ringGeo = new THREE.TorusGeometry(1.8 + (i*0.4), 0.05, 16, 100);
+                const ringMat = new THREE.MeshStandardMaterial({ 
+                    color: 0xc8f04d, 
+                    emissive: 0xc8f04d,
+                    emissiveIntensity: 0.5 + (i*0.5),
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const ring = new THREE.Mesh(ringGeo, ringMat);
+                ring.position.copy(engineCore.position);
+                ring.rotation.x = Math.PI / 2;
+                rings.push(ring);
+                scene.add(ring);
+            }
+
+            // 3. Floating "Data Shards"
+            const shardCount = 40;
+            const shardGeo = new THREE.BoxGeometry(0.1, 0.4, 0.1);
+            const shardMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.2 });
+            for(let i=0; i<shardCount; i++) {
+                const shard = new THREE.Mesh(shardGeo, shardMat);
+                shard.position.set(
+                    engineCore.position.x + (Math.random() - 0.5) * 4,
+                    (Math.random() - 0.5) * 6,
+                    (Math.random() - 0.5) * 4
+                );
+                scene.add(shard);
+            }
+
+            camera.position.z = 10;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Core Rotation
+            engineCore.rotation.y += 0.005;
+            
+            // Rings Counter-rotation and floating
+            rings.forEach((r, i) => {
+                r.rotation.z += 0.01 * (i + 1);
+                r.rotation.x = (Math.PI / 2) + Math.sin(Date.now() * 0.001 + i) * 0.2;
+            });
+
+            // Floating engine
+            engineCore.position.y = Math.sin(Date.now() * 0.001) * 0.3;
+            rings.forEach(r => r.position.y = engineCore.position.y);
+
+            renderer.render(scene, camera);
+        }
+
+        // --- Interaction & Entry ---
+        window.onload = () => {
+            init3D();
+            animate();
+            
+            // Entry Animation
+            gsap.to("#main-title", { opacity: 1, y: 0, duration: 1.5, ease: "power4.out", delay: 0.5 });
+            
+            // Mouse Parallax
+            document.addEventListener('mousemove', (e) => {
+                const x = (e.clientX - window.innerWidth / 2) * 0.0001;
+                const y = (e.clientY - window.innerHeight / 2) * 0.0001;
+                gsap.to(camera.position, { x: x * 5, y: -y * 5, duration: 2 });
+                gsap.to(engineCore.rotation, { x: y * 10, z: x * 10, duration: 2 });
+            });
+        };
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

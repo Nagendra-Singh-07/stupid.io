@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Option 3: Server Monolith</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #020205; --glass: rgba(255, 255, 255, 0.03); --border: rgba(255, 255, 255, 0.08); }
+        body { background: var(--bg); color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; margin: 0; }
+        canvas { position: fixed; top: 0; left: 0; z-index: 0; pointer-events: none; }
+        .hero-name { font-size: clamp(3rem, 10vw, 8rem); font-weight: 800; line-height: 0.9; letter-spacing: -0.04em; }
+        .nav-item { font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 700; opacity: 0.5; transition: opacity 0.3s; }
+        .nav-item:hover { opacity: 1; }
+        .btn-3d { background: #c8f04d; color: #000; padding: 1rem 2.5rem; border-radius: 0.5rem; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: inline-flex; align-items: center; gap: 0.75rem; border: none; }
+        .btn-3d:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(200, 240, 77, 0.3); }
+        .reveal { opacity: 0; transform: translateY(30px); }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+    <nav class="fixed top-0 w-full p-10 flex justify-between items-center z-50">
+        <div class="font-extrabold text-xl tracking-tighter">Nagendra Singh</div>
+        <div class="flex items-center gap-8">
+            <div class="hidden md:flex gap-10">
+                <a href="#" class="nav-item">Experience</a>
+                <a href="#" class="nav-item">Projects</a>
+                <a href="#" class="nav-item">Contact</a>
+            </div>
+        </div>
+    </nav>
+    <main class="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 pt-20">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center max-w-7xl w-full">
+            <div class="flex flex-col items-center lg:items-start text-center lg:text-left">
+                <div class="reveal text-sm font-medium opacity-60 mb-6">Hi, I am</div>
+                <h1 class="reveal hero-name mb-6">Nagendra<br>Singh</h1>
+                <div class="reveal text-lg md:text-xl font-medium opacity-40 mb-12">Data Engineer, Analyst & Scientist</div>
+                <div class="reveal text-[#c8f04d] font-bold mb-4 tracking-widest uppercase text-sm">Previewing: Option 3 (Server Monolith)</div>
+                <div class="reveal flex flex-col sm:flex-row items-center gap-4 mb-8">
+                    <a href="#" class="btn-3d">This is the one</a>
+                </div>
+            </div>
+            <div class="hidden lg:block h-[600px] relative"></div>
+        </div>
+    </main>
+
+    <script>
+        let scene, camera, renderer, rightObject, stars;
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            const starGeo = new THREE.BufferGeometry();
+            const starPos = new Float32Array(2000 * 3);
+            for(let i=0; i<2000*3; i++) starPos[i] = (Math.random() - 0.5) * 50;
+            starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
+            stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ size: 0.02, color: 0xffffff, transparent: true, opacity: 0.2 }));
+            scene.add(stars);
+
+            rightObject = new THREE.Group();
+            rightObject.position.set(4, 0, 0);
+
+            // Servers
+            for(let i=0; i<6; i++) {
+                const sGeo = new THREE.BoxGeometry(3.5, 0.7, 2);
+                const sMat = new THREE.MeshStandardMaterial({ color: 0x1a1a24, roughness: 0.7, metalness: 0.3 });
+                const server = new THREE.Mesh(sGeo, sMat);
+                server.position.y = (i - 2.5) * 0.9;
+                
+                const lightGeo = new THREE.PlaneGeometry(3.3, 0.05);
+                const lightMat = new THREE.MeshBasicMaterial({ color: Math.random() > 0.2 ? 0xc8f04d : 0xff3366 });
+                const light = new THREE.Mesh(lightGeo, lightMat);
+                light.position.set(0, 0, 1.01);
+                server.add(light);
+                
+                rightObject.add(server);
+            }
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+            dirLight.position.set(5, 10, 5);
+            scene.add(dirLight);
+
+            scene.add(rightObject);
+            camera.position.z = 8;
+            
+            // Initial angle
+            rightObject.rotation.x = 0.2;
+            rightObject.rotation.y = -0.4;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            stars.rotation.y += 0.0002;
+            rightObject.position.y = Math.sin(Date.now() * 0.001) * 0.2;
+            renderer.render(scene, camera);
+        }
+
+        window.onload = () => {
+            init3D();
+            animate();
+            gsap.to(".reveal", { opacity: 1, y: 0, duration: 1.5, stagger: 0.15, ease: "power4.out" });
+        };
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

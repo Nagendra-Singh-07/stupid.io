@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Portfolio Prototype — Nagendra Singh</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;600;700&family=Syne:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --accent: #c8f04d;
+            --text: #f0f0f5;
+        }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
+            overflow-x: hidden;
+        }
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            opacity: 0.6;
+        }
+        .pillar-btn {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        .pillar-btn.active {
+            background: var(--accent);
+            color: #0a0a0f;
+            border-color: var(--accent);
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(200, 240, 77, 0.3);
+        }
+        .project-card {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .project-card.hidden-pillar {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            pointer-events: none;
+            position: absolute;
+        }
+        .clash { font-family: 'Clash Display', sans-serif; }
+    </style>
+</head>
+<body>
+    <!-- 3D Background Container -->
+    <div id="canvas-container"></div>
+
+    <nav class="fixed top-0 w-full p-8 flex justify-between items-center z-50 mix-blend-difference">
+        <div class="text-2xl font-bold clash text-white">Ñ-ß</div>
+        <div class="hidden md:flex gap-8 text-xs tracking-widest uppercase opacity-60">
+            <a href="#" class="hover:text-white transition-colors">Process</a>
+            <a href="#" class="hover:text-white transition-colors">Laboratory</a>
+            <a href="#" class="hover:text-white transition-colors">Manifesto</a>
+        </div>
+    </nav>
+
+    <main class="relative z-10 pt-32 px-6 md:px-20">
+        <!-- Hero Section -->
+        <div class="max-w-4xl">
+            <h1 class="clash text-6xl md:text-9xl font-bold leading-none tracking-tighter mb-8">
+                TRIPLE<br><span class="opacity-30">INTELLIGENCE.</span>
+            </h1>
+            
+            <p class="text-lg md:text-xl opacity-60 max-w-xl mb-12">
+                A unified architecture for <strong>Engineering</strong>, <strong>Analysis</strong>, and <strong>Science</strong>. Defying the boundaries of raw data.
+            </p>
+
+            <!-- The Switcher -->
+            <div class="flex flex-wrap gap-4 mb-20">
+                <button onclick="filterPillar('Engineer')" class="pillar-btn px-8 py-4 rounded-full text-sm font-bold tracking-widest uppercase active" id="btn-Engineer">Engineer</button>
+                <button onclick="filterPillar('Analyst')" class="pillar-btn px-8 py-4 rounded-full text-sm font-bold tracking-widest uppercase" id="btn-Analyst">Analyst</button>
+                <button onclick="filterPillar('Scientist')" class="pillar-btn px-8 py-4 rounded-full text-sm font-bold tracking-widest uppercase" id="btn-Scientist">Scientist</button>
+            </div>
+        </div>
+
+        <!-- Dynamic Projects Grid -->
+        <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-32">
+            <!-- Project Cards will be injected here -->
+        </div>
+    </main>
+
+    <script>
+        // 1. Data Core (assigned by Lead Architect)
+        const projects = [
+            { id: "01", title: "Sales Forecasting ML Pipeline", categories: ["Scientist", "Engineer"], desc: "Predicting Revenue with 94% Accuracy using XGBoost." },
+            { id: "02", title: "Customer Segmentation", categories: ["Analyst", "Scientist"], desc: "K-Means + RFM driving 28% conversion lift." },
+            { id: "03", title: "Real-Time Analytics Dashboard", categories: ["Engineer", "Analyst"], desc: "Kafka + Spark Streaming with sub-second latency." },
+            { id: "04", title: "Automated ETL Pipeline", categories: ["Engineer"], desc: "Airflow DAGs → Snowflake nightly. Zero incidents." },
+            { id: "05", title: "Sentiment Analysis NLP", categories: ["Scientist"], desc: "Fine-tuned BERT on 200K reviews." }
+        ];
+
+        // 2. 3D Engine (Stitch)
+        let scene, camera, renderer, particles;
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Create Neural Mesh
+            const geometry = new THREE.BufferGeometry();
+            const count = 1500;
+            const positions = new Float32Array(count * 3);
+            for(let i=0; i<count*3; i++) {
+                positions[i] = (Math.random() - 0.5) * 10;
+            }
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            
+            const material = new THREE.PointsMaterial({
+                size: 0.015,
+                color: 0xc8f04d,
+                transparent: true,
+                opacity: 0.8
+            });
+            
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+            camera.position.z = 5;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            particles.rotation.y += 0.001;
+            particles.rotation.x += 0.0005;
+            renderer.render(scene, camera);
+        }
+
+        // 3. UI Logic (Stitch)
+        function renderProjects() {
+            const grid = document.getElementById('projects-grid');
+            grid.innerHTML = projects.map(p => `
+                <div class="project-card bg-[#13131f] border border-white/5 p-8 rounded-3xl" data-pillars="${p.categories.join(',')}">
+                    <div class="text-[10px] tracking-widest uppercase text-[#c8f04d] mb-4">${p.categories.join(' · ')}</div>
+                    <h3 class="clash text-2xl font-bold mb-4">${p.title}</h3>
+                    <p class="text-sm opacity-40 leading-relaxed mb-6">${p.desc}</p>
+                    <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-[#c8f04d] hover:text-black transition-all cursor-pointer">
+                        <svg width="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M7 17L17 7M7 7h10v10"/></svg>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterPillar(pillar) {
+            // Update Buttons
+            document.querySelectorAll('.pillar-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${pillar}`).classList.add('active');
+
+            // Update Cards
+            const cards = document.querySelectorAll('.project-card');
+            cards.forEach(c => {
+                const pillars = c.dataset.pillars.split(',');
+                if(pillars.includes(pillar)) {
+                    c.classList.remove('hidden-pillar');
+                    c.style.display = 'block';
+                } else {
+                    c.classList.add('hidden-pillar');
+                    setTimeout(() => { if(c.classList.contains('hidden-pillar')) c.style.display = 'none'; }, 500);
+                }
+            });
+
+            // Subtle 3D Color Shift
+            if(pillar === 'Engineer') particles.material.color.setHex(0xc8f04d); // Green
+            if(pillar === 'Analyst') particles.material.color.setHex(0x8b5cf6);  // Purple
+            if(pillar === 'Scientist') particles.material.color.setHex(0x3b82f6); // Blue
+        }
+
+        // Init
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        init3D();
+        animate();
+        renderProjects();
+        filterPillar('Engineer'); // Default
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+sqlmodel
+pydantic
+python-multipart
+python-dotenv
+aiosqlite
+faiss-cpu
+langchain
+langchain-community
+openai
+beautifulsoup4
+sentence-transformers

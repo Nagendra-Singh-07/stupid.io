@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — Nagendra Singh</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
+    rel="stylesheet" />
+  <style>
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #13131f;
+      --accent: #c8f04d;
+      --text: #f0f0f5;
+      --muted: #6b6b80;
+      --border: rgba(255, 255, 255, 0.07);
+      --nav-h: 76px;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* noise */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      opacity: .5;
+    }
+
+    /* ══════ HEADER ══════ */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: var(--nav-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 56px;
+      background: rgba(10, 10, 15, 0.75);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .monogram {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Clash Display', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #0a0a0f;
+      animation: pulse-ring 3s ease-in-out infinite;
+      transition: transform .3s;
+      cursor: default;
+      text-decoration: none;
+    }
+
+    .monogram:hover {
+      transform: rotate(-8deg) scale(1.08);
+    }
+
+    @keyframes pulse-ring {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(200, 240, 77, .4);
+      }
+
+      50% {
+        box-shadow: 0 0 0 10px rgba(200, 240, 77, 0);
+      }
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      font-family: 'Syne', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      position: relative;
+      padding-bottom: 3px;
+      transition: color .3s;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: var(--accent);
+      transition: width .35s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+    }
+
+    .nav-links a:hover::after {
+      width: 100%;
+    }
+
+    /* hamburger mobile */
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      gap: 5px;
+      width: 38px;
+      height: 38px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+      z-index: 200;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 100%;
+      height: 2px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: transform .35s cubic-bezier(.4, 0, .2, 1), opacity .25s;
+    }
+
+    .hamburger.open span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+
+    .hamburger.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.open span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
+
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      background: rgba(10, 10, 15, .97);
+      backdrop-filter: blur(24px);
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .35s;
+    }
+
+    .mobile-menu.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .mobile-menu a {
+      font-family: 'Clash Display', sans-serif;
+      font-size: clamp(36px, 10vw, 56px);
+      font-weight: 700;
+      color: var(--muted);
+      text-decoration: none;
+      transform: translateY(20px);
+      opacity: 0;
+      transition: color .3s, transform .4s cubic-bezier(.4, 0, .2, 1), opacity .4s;
+    }
+
+    .mobile-menu.open a {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .mobile-menu.open a:nth-child(1) {
+      transition-delay: .08s;
+    }
+
+    .mobile-menu.open a:nth-child(2) {
+      transition-delay: .15s;
+    }
+
+    .mobile-menu.open a:nth-child(3) {
+      transition-delay: .22s;
+    }
+
+    .mobile-menu a:hover {
+      color: var(--accent);
+    }
+
+    /* ══════ PAGE HERO ══════ */
+    .page-hero {
+      position: relative;
+      z-index: 1;
+      padding: calc(var(--nav-h) + 80px) 56px 80px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-hero::before {
+      content: 'WORK';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'Clash Display', sans-serif;
+      font-weight: 700;
+      font-size: clamp(100px, 18vw, 220px);
+      letter-spacing: -.04em;
+      color: rgba(255, 255, 255, .018);
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+      z-index: 0;
+    }
+
+    .page-hero-left {
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-hero-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .page-hero-title {
+      font-family: 'Clash Display', sans-serif;
+      font-size: clamp(48px, 8vw, 100px);
+      font-weight: 700;
+      line-height: .92;
+      letter-spacing: -.03em;
+      color: var(--text);
+    }
+
+    .page-hero-title em {
+      font-style: normal;
+      color: transparent;
+      -webkit-text-stroke: 1.5px rgba(255, 255, 255, .22);
+    }
+
+    .page-hero-right {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 14px;
+      padding-bottom: 8px;
+    }
+
+    .page-hero-count {
+      font-family: 'Clash Display', sans-serif;
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 700;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(255, 255, 255, .15);
+      letter-spacing: -.02em;
+      line-height: 1;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 9px 18px;
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      transition: all .3s;
+    }
+
+    .back-link svg {
+      width: 14px;
+      transition: transform .3s;
+    }
+
+    .back-link:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .back-link:hover svg {
+      transform: translateX(-4px);
+    }
+
+    /* ══════ PROJECT GRID — Jean Lê asymmetric pattern ══════ */
+    .proj-grid {
+      position: relative;
+      z-index: 1;
+      padding: 80px 56px 120px;
+    }
+
+    /* 12-col CSS grid, rows of 60px */
+    .grid-inner {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-auto-rows: 60px;
+      column-gap: 20px;
+    }
+
+    /* ── EACH PROJECT CARD ── */
+    .pj {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity .7s cubic-bezier(.4, 0, .2, 1),
+        transform .7s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .pj.in {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* staggered delays */
+    .pj:nth-child(1) {
+      transition-delay: .0s;
+    }
+
+    .pj:nth-child(2) {
+      transition-delay: .1s;
+    }
+
+    .pj:nth-child(3) {
+      transition-delay: .18s;
+    }
+
+    .pj:nth-child(4) {
+      transition-delay: .08s;
+    }
+
+    .pj:nth-child(5) {
+      transition-delay: .14s;
+    }
+
+    /* positions matching reference image (Jean Lê 2-col stagger) */
+    .pj:nth-child(1) {
+      grid-column: 1/7;
+      grid-row: 1/11;
+      z-index: 2;
+    }
+
+    /* large left */
+    .pj:nth-child(2) {
+      grid-column: 7/13;
+      grid-row: 2/9;
+      z-index: 2;
+    }
+
+    /* right, offset down */
+    .pj:nth-child(3) {
+      grid-column: 7/13;
+      grid-row: 10/17;
+      z-index: 2;
+    }
+
+    /* right, below */
+    .pj:nth-child(4) {
+      grid-column: 1/7;
+      grid-row: 12/20;
+      z-index: 2;
+    }
+
+    /* large left, bottom */
+    .pj:nth-child(5) {
+      grid-column: 4/10;
+      grid-row: 15/22;
+      z-index: 3;
+    }
+
+    /* center overlap */
+
+    /* image fill */
+    .pj-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .7s cubic-bezier(.4, 0, .2, 1), filter .5s;
+      filter: grayscale(20%) brightness(.88);
+    }
+
+    .pj-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Clash Display', sans-serif;
+      font-weight: 700;
+      font-size: clamp(60px, 10vw, 120px);
+      color: rgba(255, 255, 255, .04);
+      transition: transform .7s cubic-bezier(.4, 0, .2, 1), filter .5s;
+      filter: brightness(.88);
+    }
+
+    .pj:hover .pj-placeholder {
+      transform: scale(1.04);
+      filter: brightness(1.05);
+    }
+
+    .pj:hover .pj-img {
+      transform: scale(1.04);
+      filter: grayscale(0%) brightness(1.02);
+    }
+
+    /* gradient overlay */
+    .pj::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(160deg, transparent 40%, rgba(0, 0, 0, .72) 100%);
+      opacity: 0;
+      transition: opacity .45s;
+    }
+
+    .pj:hover::before {
+      opacity: 1;
+    }
+
+    /* hover info */
+    .pj-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 2;
+      padding: 24px 26px 28px;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity .38s .05s, transform .38s .05s;
+      pointer-events: none;
+    }
+
+    .pj:hover .pj-info {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .pj-tag {
+      font-family: 'Syne', sans-serif;
+      font-size: 9px;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .pj-name {
+      font-family: 'Clash Display', sans-serif;
+      font-size: clamp(16px, 2.2vw, 24px);
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+
+    .pj-desc {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: rgba(255, 255, 255, .5);
+      margin-top: 8px;
+      line-height: 1.6;
+    }
+
+    /* arrow button */
+    .pj-arrow {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      z-index: 2;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: scale(0) rotate(-45deg);
+      transition: transform .32s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .pj:hover .pj-arrow {
+      transform: scale(1) rotate(0);
+    }
+
+    .pj-arrow svg {
+      width: 13px;
+      color: #0a0a0f;
+      stroke-width: 2.5;
+    }
+
+    /* italic label BELOW — Jean Lê signature style */
+    .pj-label {
+      position: absolute;
+      z-index: 3;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-style: italic;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      white-space: nowrap;
+      transition: color .3s;
+      bottom: -22px;
+    }
+
+    .pj:nth-child(1) .pj-label {
+      left: 0;
+    }
+
+    .pj:nth-child(2) .pj-label {
+      right: 0;
+      text-align: right;
+    }
+
+    .pj:nth-child(3) .pj-label {
+      right: 0;
+      text-align: right;
+    }
+
+    .pj:nth-child(4) .pj-label {
+      left: 0;
+    }
+
+    .pj:nth-child(5) .pj-label {
+      right: 0;
+      text-align: right;
+    }
+
+    .pj:hover .pj-label {
+      color: var(--accent);
+    }
+
+    /* bg tints */
+    .c1 {
+      background: linear-gradient(145deg, #041828, #093b28);
+    }
+
+    .c2 {
+      background: linear-gradient(145deg, #1e1600, #3a2a00);
+    }
+
+    .c3 {
+      background: linear-gradient(145deg, #150624, #0a1640);
+    }
+
+    .c4 {
+      background: linear-gradient(145deg, #042014, #001e3a);
+    }
+
+    .c5 {
+      background: linear-gradient(145deg, #2e1000, #1e0620);
+    }
+
+    /* ══════ FOOTER ══════ */
+    footer {
+      position: relative;
+      z-index: 1;
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 64px 56px 48px;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      margin-bottom: 56px;
+    }
+
+    .footer-sig {
+      font-family: 'Clash Display', sans-serif;
+      font-size: clamp(32px, 4vw, 52px);
+      font-weight: 700;
+      letter-spacing: -.02em;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .footer-sig span {
+      color: var(--accent);
+    }
+
+    .footer-top-right {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .footer-social {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .footer-social a {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: color .3s, gap .3s;
+    }
+
+    .footer-social a:hover {
+      color: var(--accent);
+      gap: 14px;
+    }
+
+    .footer-social a svg {
+      width: 14px;
+      opacity: .5;
+      transition: opacity .3s;
+    }
+
+    .footer-social a:hover svg {
+      opacity: 1;
+    }
+
+    .footer-back-top {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      transition: background .3s, border-color .3s, transform .35s cubic-bezier(.4, 0, .2, 1);
+    }
+
+    .footer-back-top:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      transform: translateY(-5px);
+    }
+
+    .footer-back-top svg {
+      width: 16px;
+      color: var(--muted);
+      transition: color .3s;
+    }
+
+    .footer-back-top:hover svg {
+      color: #0a0a0f;
+    }
+
+    .footer-divider {
+      width: 100%;
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer-divider::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -30%;
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(to right, transparent, var(--accent), transparent);
+      animation: shimmer 4s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      to {
+        left: 100%;
+      }
+    }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .footer-copy {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: .04em;
+    }
+
+    .footer-copy strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .footer-email {
+      font-family: 'Syne', sans-serif;
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: none;
+      letter-spacing: .06em;
+      transition: color .3s;
+    }
+
+    .footer-email:hover {
+      color: var(--accent);
+    }
+
+    .footer-privacy {
+      font-family: 'Syne', sans-serif;
+      font-size: 11px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color .3s;
+      white-space: nowrap;
+    }
+
+    .footer-privacy:hover {
+      color: var(--accent);
+    }
+
+    /* ══════ RESPONSIVE ══════ */
+    @media (max-width:900px) {
+      header {
+        padding: 0 28px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hamburger {
+        display: flex;
+      }
+
+      .mobile-menu {
+        display: flex;
+      }
+
+      .page-hero {
+        padding: calc(var(--nav-h) + 50px) 28px 60px;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .page-hero-right {
+        align-items: flex-start;
+      }
+
+      .proj-grid {
+        padding: 60px 28px 100px;
+      }
+
+      .grid-inner {
+        display: flex;
+        flex-direction: column;
+        gap: 56px;
+      }
+
+      .pj {
+        height: 280px;
+      }
+
+      .pj-label {
+        bottom: -20px !important;
+        left: 0 !important;
+        right: auto !important;
+      }
+
+      footer {
+        padding: 48px 28px 36px;
+      }
+
+      .footer-top {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto;
+        gap: 32px 0;
+      }
+
+      .footer-top-right {
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      .footer-social {
+        grid-column: 1/3;
+        grid-row: 2;
+        align-items: flex-start;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      .footer-bottom {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+    }
+
+    @media (max-width:480px) {
+      .page-hero {
+        padding: calc(var(--nav-h) + 36px) 20px 48px;
+      }
+
+      .proj-grid {
+        padding: 40px 20px 80px;
+      }
+
+      .pj {
+        height: 220px;
+      }
+
+      footer {
+        padding: 40px 20px 32px;
+      }
+    }
+
+    .sig-img {
+      width: clamp(160px, 27vw, 260px);
+      height: auto;
+      display: block;
+      opacity: .9;
+      transition: opacity .3s;
+    }
+
+    .sig-img:hover {
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ══════ MOBILE MENU ══════ -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="../index.html" onclick="closeMenu()">Home</a>
+    <a href="../index.html#work" onclick="closeMenu()">Work</a>
+    <a href="../info.html#info" onclick="closeMenu()">About</a>
+    <a href="../info.html#contact" onclick="closeMenu()">Contact</a>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <a href="../index.html" class="monogram">Ñ-ß</a>
+    <nav class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="../index.html#work">Work</a>
+      <a href="../info.html#info">About</a>
+      <a href="../info.html#contact">Contact</a>
+    </nav>
+    <button class="hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <!-- ══════ PAGE HERO ══════ -->
+  <section class="page-hero">
+    <div class="page-hero-left">
+      <span class="page-hero-label">Selected Work</span>
+      <h1 class="page-hero-title">ALL<br><em>PROJECTS.</em></h1>
+    </div>
+    <div class="page-hero-right">
+      <span class="page-hero-count">05</span>
+      <a href="../index.html" class="back-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        Back Home
+      </a>
+    </div>
+  </section>
+
+  <!-- ══════ PROJECT GRID ══════ -->
+  <main class="proj-grid">
+    <div class="grid-inner">
+
+      <!-- 01 — Sales Forecasting (large left) -->
+      <div onclick="window.location='Project_01_sales_forecasting.html'" class="pj c1">
+        <!--
+          TO ADD YOUR IMAGE:
+          Replace <div class="pj-placeholder"> with:
+          <img src="project1.jpg" class="pj-img" alt="Sales Forecasting" />
+        -->
+        <img src="../assets/images/Gemini_Generated_Image_a227gua227gua227.png" class="pj-img" alt="Sales Forecasting" />        <div class="pj-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M7 17L17 7M7 7h10v10" />
+          </svg>
+        </div>
+        <div class="pj-info">
+          <span class="pj-tag">Machine Learning · Python</span>
+          <p class="pj-name">Sales Forecasting<br>ML Pipeline</p>
+          <p class="pj-desc">XGBoost regression on 3 years of data — 94% accuracy across 40+ product categories.</p>
+        </div>
+        <span class="pj-label">Sales Forecasting</span>
+      </div>
+
+      <!-- 02 — Customer Segmentation (right, offset) -->
+      <div onclick="window.location='Project_02_customer_segmentation.html'" class="pj c2">
+        <img src="project1.jpg" class="pj-img" alt="Sales Forecasting" />        <div class="pj-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M7 17L17 7M7 7h10v10" />
+          </svg>
+        </div>
+        <div class="pj-info">
+          <span class="pj-tag">Data Science · Clustering</span>
+          <p class="pj-name">Customer<br>Segmentation</p>
+          <p class="pj-desc">K-Means + RFM on 500K+ records — 6 personas driving 28% conversion lift.</p>
+        </div>
+        <span class="pj-label">Customer Segmentation</span>
+      </div>
+
+      <!-- 03 — Dashboard (right, below) -->
+      <div onclick="window.location='Project_03_realtime_dashboard.html'" class="pj c3">
+        <div class="pj-placeholder">03</div>
+        <div class="pj-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M7 17L17 7M7 7h10v10" />
+          </svg>
+        </div>
+        <div class="pj-info">
+          <span class="pj-tag">Data Engineering · Kafka</span>
+          <p class="pj-name">Real-Time Analytics<br>Dashboard</p>
+          <p class="pj-desc">Kafka + Spark Streaming — sub-second latency on 1M+ daily events.</p>
+        </div>
+        <span class="pj-label">Real-Time Dashboard</span>
+      </div>
+
+      <!-- 04 — ETL Pipeline (large left, bottom) -->
+      <div onclick="window.location='Project_04_etl_pipeline.html'" class="pj c4">
+        <div class="pj-placeholder">04</div>
+        <div class="pj-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M7 17L17 7M7 7h10v10" />
+          </svg>
+        </div>
+        <div class="pj-info">
+          <span class="pj-tag">Data Engineering · Airflow</span>
+          <p class="pj-name">Automated ETL<br>Pipeline</p>
+          <p class="pj-desc">Airflow DAGs → Snowflake nightly from 12 sources. Zero incidents for 8+ months.</p>
+        </div>
+        <span class="pj-label">ETL Pipeline</span>
+      </div>
+
+      <!-- 05 — NLP (center overlap) -->
+      <div onclick="window.location='Project_05_sentiment_analysis.html'" class="pj c5">
+        <div class="pj-placeholder">05</div>
+        <div class="pj-arrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M7 17L17 7M7 7h10v10" />
+          </svg>
+        </div>
+        <div class="pj-info">
+          <span class="pj-tag">NLP · Deep Learning</span>
+          <p class="pj-name">Sentiment Analysis<br>NLP Model</p>
+          <p class="pj-desc">Fine-tuned BERT on 200K reviews — 91% F1, deployed with real-time FastAPI serving.</p>
+        </div>
+        <span class="pj-label">Sentiment Analysis</span>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ══════ FOOTER ══════ -->
+  <footer>
+    <div class="footer-top">
+      <div class="footer-sig">
+        <img src="../assets/images/signature-comforter-brush.png" alt="Nagendra Singh" class="sig-img" />
+      </div>
+      <div class="footer-social">
+        <a href="https://linkedin.com" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6z" />
+            <rect x="2" y="9" width="4" height="12" />
+            <circle cx="4" cy="4" r="2" />
+          </svg>
+          LinkedIn
+        </a>
+        <a href="https://github.com" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0020 4.77 5.07 5.07 0 0019.91 1S18.73.65 16 2.48a13.38 13.38 0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 005 4.77a5.44 5.44 0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 009 18.13V22" />
+          </svg>
+          GitHub
+        </a>
+        <a href="https://twitter.com" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path
+              d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" />
+          </svg>
+          Twitter
+        </a>
+      </div>
+      <div class="footer-top-right">
+        <a href="#" class="footer-back-top" title="Back to top">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M18 15l-6-6-6 6" />
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="footer-divider"></div>
+
+    <div class="footer-bottom">
+      <p class="footer-copy">
+        &copy; 2025 <strong>Nagendra Singh</strong> &mdash; All rights reserved.
+        &nbsp;&nbsp;<a href="mailto:your@email.com" class="footer-email">your@email.com</a>
+      </p>
+      <a href="../Privacy_policy.html" class="footer-privacy">Privacy Policy</a>
+    </div>
+  </footer>
+
+  <script>
+    /* hamburger */
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    hamburger.addEventListener('click', () => {
+      const open = mobileMenu.classList.toggle('open');
+      hamburger.classList.toggle('open', open);
+      document.body.style.overflow = open ? 'hidden' : '';
+    });
+    function closeMenu() {
+      mobileMenu.classList.remove('open');
+      hamburger.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
+
+    /* scroll reveal for project cards */
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.pj').forEach(el => obs.observe(el));
+  </script>
+</body>
+
+</html>

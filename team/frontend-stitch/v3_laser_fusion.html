@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V3.2: Laser Fusion Hyper-Cube — Nagendra Singh</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #010103; --accent: #c8f04d; --blue-laser: #00f2ff; }
+        body { background: var(--bg); color: #ffffff; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; margin: 0; }
+        canvas { position: fixed; top: 0; left: 0; z-index: 0; }
+        .ui-overlay { position: relative; z-index: 10; pointer-events: none; }
+        .ui-overlay * { pointer-events: auto; }
+        .hero-name { font-size: clamp(3.5rem, 10vw, 7rem); font-weight: 800; line-height: 0.85; letter-spacing: -0.05em; }
+        .btn-laser {
+            background: #ffffff; color: #000; padding: 1.2rem 3.5rem; border-radius: 4px;
+            font-weight: 800; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.2em;
+            transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+        }
+        .btn-laser:hover { background: var(--blue-laser); transform: scale(1.05); box-shadow: 0 0 40px rgba(0, 242, 255, 0.5); }
+        .label-blue { color: var(--blue-laser); text-shadow: 0 0 15px rgba(0, 242, 255, 0.6); }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+
+    <div class="ui-overlay min-h-screen flex flex-col justify-between p-12 md:p-24">
+        <nav class="flex justify-between items-start">
+            <div class="flex flex-col">
+                <div class="font-extrabold text-2xl tracking-tighter mb-2">NS.SYSTEMS</div>
+                <div class="text-[9px] tracking-[0.4em] uppercase opacity-40">System State: Active Scanning</div>
+            </div>
+        </nav>
+
+        <div class="max-w-4xl">
+            <div class="mb-8 flex items-center gap-4">
+                <div class="w-12 h-[1px] bg-[#00f2ff]"></div>
+                <div class="text-[10px] tracking-[0.5em] uppercase font-bold label-blue">Neural Network Scan [77%]</div>
+            </div>
+            <h1 class="hero-name mb-12">
+                ACTIVE<br><span class="opacity-20" style="-webkit-text-stroke: 1px #00f2ff">INTELLIGENCE.</span>
+            </h1>
+            <p class="text-xl md:text-2xl font-light opacity-50 max-w-lg mb-12 leading-relaxed">
+                Interfacing with <span class="text-[#00f2ff]">hyperscale data</span> to create structural market advantages.
+            </p>
+            <div class="flex flex-wrap gap-6">
+                <button class="btn-laser">Initiate Deep Scan</button>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-end text-[9px] tracking-[0.3em] uppercase font-bold opacity-30">
+            <div>21.1702° N, 72.8311° E // DATA ARCHITECT v3.2</div>
+            <div class="flex gap-10">
+                <span>Eng</span>
+                <span>Ana</span>
+                <span>Sci</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let scene, camera, renderer, cubeGroup, glassCube, wireCube, laserPlane, rings = [];
+        
+        function init3D() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+            // Tech Lighting
+            const p1 = new THREE.PointLight(0x00f2ff, 5, 20); p1.position.set(5, 5, 5); scene.add(p1);
+            const p2 = new THREE.PointLight(0x8b5cf6, 3, 20); p2.position.set(-5, -5, 5); scene.add(p2);
+            scene.add(new THREE.AmbientLight(0xffffff, 0.1));
+
+            cubeGroup = new THREE.Group();
+            cubeGroup.position.set(4, 0, 0);
+
+            // 1. Smoked Glass Cube
+            const glassGeo = new THREE.BoxGeometry(2.5, 2.5, 2.5);
+            const glassMat = new THREE.MeshStandardMaterial({ 
+                color: 0x0a0a15, metalness: 0.9, roughness: 0.1, 
+                transparent: true, opacity: 0.5 
+            });
+            glassCube = new THREE.Mesh(glassGeo, glassMat);
+            cubeGroup.add(glassCube);
+
+            // 2. Glowing Wireframe Core
+            const wireGeo = new THREE.BoxGeometry(1.6, 1.6, 1.6);
+            const wireMat = new THREE.MeshBasicMaterial({ color: 0x00f2ff, wireframe: true, transparent: true, opacity: 0.8 });
+            wireCube = new THREE.Mesh(wireGeo, wireMat);
+            cubeGroup.add(wireCube);
+
+            // 3. Saturn Rings (Vibrant)
+            const ringColors = [0x00f2ff, 0x8b5cf6, 0xc8f04d];
+            for(let i=0; i<3; i++) {
+                const rGeo = new THREE.TorusGeometry(3.2 + (i*0.6), 0.04, 16, 100);
+                const rMat = new THREE.MeshBasicMaterial({ color: ringColors[i], transparent: true, opacity: 0.5 });
+                const ring = new THREE.Mesh(rGeo, rMat);
+                ring.rotation.x = Math.random() * Math.PI;
+                ring.rotation.y = Math.random() * Math.PI;
+                rings.push(ring);
+                cubeGroup.add(ring);
+            }
+
+            // 4. THE BLUE LASER LINE (Horizontal Plane)
+            const laserGeo = new THREE.PlaneGeometry(8, 0.1);
+            const laserMat = new THREE.MeshBasicMaterial({ 
+                color: 0x00f2ff, 
+                transparent: true, 
+                opacity: 0.9, 
+                side: THREE.DoubleSide 
+            });
+            laserPlane = new THREE.Mesh(laserGeo, laserMat);
+            laserPlane.position.x = 4;
+            scene.add(laserPlane);
+
+            scene.add(cubeGroup);
+            camera.position.z = 10;
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Core Animation
+            cubeGroup.rotation.y += 0.004;
+            wireCube.rotation.x -= 0.008;
+            wireCube.scale.setScalar(1 + Math.sin(Date.now() * 0.005) * 0.05);
+
+            // Laser Sweep Animation
+            laserPlane.position.y = Math.sin(Date.now() * 0.002) * 3;
+            laserPlane.scale.x = 1 + Math.sin(Date.now() * 0.002) * 0.2; // Pulsing width
+
+            // Gyroscopic Rings
+            rings.forEach((r, i) => {
+                r.rotation.x += 0.006 * (i + 1);
+                r.rotation.y += 0.004 * (i + 1);
+            });
+
+            // Gentle Floating
+            cubeGroup.position.y = Math.sin(Date.now() * 0.001) * 0.5;
+
+            renderer.render(scene, camera);
+        }
+
+        window.onload = () => {
+            init3D(); animate();
+            
+            document.addEventListener('mousemove', (e) => {
+                const x = (e.clientX - window.innerWidth / 2) * 0.0001;
+                const y = (e.clientY - window.innerHeight / 2) * 0.0001;
+                gsap.to(camera.position, { x: x * 10, y: -y * 10, duration: 2.5 });
+                gsap.to(cubeGroup.rotation, { x: y * 4, z: x * 4, duration: 2 });
+            });
+        };
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>

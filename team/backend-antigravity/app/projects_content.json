@@ -1,0 +1,7 @@
+[
+  {
+    "title": "Sales Forecasting ML Pipeline \u2014 Nagendra Singh",
+    "content": "Nagendra\u2019s 2024 Sales Forecasting framework. High-accuracy revenue projection using XGBoost and detailed feature engineering on historical retail data.\n\nOBJECTIVE: The project aimed to solve the volatility in quarterly revenue projections for a mid-sized retail chain. By leveraging 3 years of transactional data, we built a pipeline that outperformed the existing moving-average model by 14% in MAE.\n\nDATA ENGINEERING: Raw data was pulled from Snowflake, cleaned with Pandas, and enriched with external indicators like holiday calendars and competitor pricing indices. We used a rolling-window strategy for time-series validation.\n\nMODELING & TUNING: XGBoost was selected after benchmarking against Prophet and ARIMA. Hyperparameters were tuned via Optuna, focusing on minimizing Mean Absolute Error (MAE) and ensuring robustness across seasons.\n\nIMPACT: The resulting forecasts allowed the procurement team to reduce overstock by 22% in the first quarter of deployment. The dashboard now serves as the primary tool for executive financial planning.",
+    "id": "01_sales_forecasting"
+  }
+]
