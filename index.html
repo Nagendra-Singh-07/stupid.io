@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portfolio</title>
+  <title>Nagendra Singh — Data & ML Portfolio</title>
+  <link rel="icon"
+    href="data:;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==">
   <link
     href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
     rel="stylesheet" />
@@ -1187,9 +1189,9 @@
     /* scroll reveal */
     .projects-header,
     .filmstrip-track {
-      opacity: 0;
-      transform: translateY(36px);
-      transition: opacity .85s cubic-bezier(.4, 0, .2, 1), transform .85s cubic-bezier(.4, 0, .2, 1);
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity .425s cubic-bezier(.4, 0, .2, 1), transform .425s cubic-bezier(.4, 0, .2, 1);
     }
 
     .projects-header.in {
@@ -1467,9 +1469,9 @@
     .services-top,
     .services-lines,
     .services-tools {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity .75s cubic-bezier(.4, 0, .2, 1), transform .75s cubic-bezier(.4, 0, .2, 1);
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity .375s cubic-bezier(.4, 0, .2, 1), transform .375s cubic-bezier(.4, 0, .2, 1);
     }
 
     .services-lines {
@@ -2235,7 +2237,7 @@
           View CV
         </a>
         <!-- Download CV — replace href with your actual CV file path -->
-        <a href="your-cv.pdf" download class="btn btn-outline">
+        <a href="#" download class="btn btn-outline">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" />
           </svg>
@@ -2757,11 +2759,11 @@
       /* Project cards — click to navigate */
       document.querySelectorAll('.fp').forEach((fp, i) => {
         const links = [
-          'project_01_sales_forecasting.html',
-          'project_02_customer_segmentation.html',
-          'project_03_realtime_dashboard.html',
-          'project_04_etl_pipeline.html',
-          'project_05_sentiment_analysis.html',
+          'projects/Project_01_sales_forecasting.html',
+          'projects/Project_02_customer_segmentation.html',
+          'projects/Project_03_realtime_dashboard.html',
+          'projects/Project_04_etl_pipeline.html',
+          'projects/Project_05_sentiment_analysis.html',
         ];
 
         fp.addEventListener('click', function (e) {

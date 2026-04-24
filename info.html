@@ -5,9 +5,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Info — Nagendra Singh</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==">
     <link
-        href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"
-        rel="stylesheet" />
+      href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap"        rel="stylesheet" />
     <style>
         *,
         *::before,
@@ -1301,25 +1301,18 @@ html, body {
 
         const CONFIG = {
             // ── EmailJS ──────────────────────────────────────────
-            // 1. Sign up at https://emailjs.com (free)
-            // 2. Add an Email Service (Gmail recommended)
-            // 3. Create an Email Template (use variables below)
-            // 4. Copy your Service ID, Template ID, Public Key
             emailjs: {
                 publicKey: "lkf1gRO6wjQrJHgz8",
-                serviceID: "service_tmh5flc",    // e.g. "service_abc123"
-                templateID: "template_4ell8ak",   // e.g. "template_xyz789"
-                // Public key already set in init above
+                serviceID: "service_tmh5flc",
+                templateID: "template_4ell8ak",
             },
 
-            // ── CallMeBot WhatsApp ────────────────────────────────
-            // 1. Add +34 644 77 72 85 on WhatsApp
-            // 2. Send: "I allow callmebot to send me messages"
-            // 3. You'll receive your API key via WhatsApp
-            // Docs: https://www.callmebot.com/blog/free-api-whatsapp-messages/
+            // ── Green API WhatsApp ────────────────────────────────
             whatsapp: {
-                phone: "YOUR_WHATSAPP_NUMBER",   // e.g. "919876543210" (no + or spaces)
-                apiKey: "YOUR_CALLMEBOT_API_KEY", // e.g. "123456"
+                apiUrl: "https://7107.api.greenapi.com", 
+                idInstance: "7107599342",
+                apiToken: "dbabf7d789ee4cf0a770c7b45505d4b214c7076e60244b79a0",
+                recipient: "918780385005"
             }
         };
 
@@ -1362,47 +1355,53 @@ html, body {
 
             // ── 1. Send EMAIL via EmailJS ──
             try {
-                const templateParams = {
+                // Ensure emailjs is initialized with public key
+                emailjs.init(CONFIG.emailjs.publicKey);
+                
+                await emailjs.send(CONFIG.emailjs.serviceID, CONFIG.emailjs.templateID, {
                     from_name: fullName,
                     from_email: email,
                     message: message,
                     sent_at: now,
                     reply_to: email,
-                };
-                await emailjs.send(
-                    CONFIG.emailjs.serviceID,
-                    CONFIG.emailjs.templateID,
-                    templateParams
-                );
+                });
                 results.email = true;
                 console.log('✅ EmailJS: sent');
             } catch (err) {
                 console.error('❌ EmailJS error:', err);
             }
 
-            // ── 2. Send WHATSAPP via CallMeBot ──
+            // ── 2. Send WHATSAPP via Green API ──
             try {
-                const waText = encodeURIComponent(
-                    `📬 *New Portfolio Contact!*
+                const waMessage = `📬 *New Portfolio Contact!*\n\n` +
+                                 `👤 *Name:* ${fullName}\n` +
+                                 `📧 *Email:* ${email}\n` +
+                                 `💬 *Message:* ${message}\n\n` +
+                                 `🕐 *Received:* ${now}`;
 
-` +
-                    `👤 *Name:* ${fullName}
-` +
-                    `📧 *Email:* ${email}
-` +
-                    `💬 *Message:* ${message}
+                // Ensure no + or spaces in number
+                const cleanPhone = CONFIG.whatsapp.recipient.replace(/\D/g, '');
 
-` +
-                    `🕐 *Received:* ${now}`
-                );
-                const waURL = `https://api.callmebot.com/whatsapp.php?phone=${CONFIG.whatsapp.phone}&text=${waText}&apikey=${CONFIG.whatsapp.apiKey}`;
+                const response = await fetch(`${CONFIG.whatsapp.apiUrl}/waInstance${CONFIG.whatsapp.idInstance}/sendMessage/${CONFIG.whatsapp.apiToken}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chatId: `${cleanPhone}@c.us`,
+                        message: waMessage
+                    })
+                });
 
-                // Use no-cors since CallMeBot doesn't support CORS — fire and forget
-                await fetch(waURL, { mode: 'no-cors' });
-                results.whatsapp = true;
-                console.log('✅ WhatsApp: fired');
-            } catch (err) {
-                console.error('❌ WhatsApp error:', err);
+                if (response.ok) {
+                    const data = await response.json();
+                    results.whatsapp = true;
+                    console.log('✅ WhatsApp sent! ID:', data.idMessage);
+                } else {
+                    const errorData = await response.text();
+                    console.error('❌ WhatsApp API Error:', response.status, errorData);
+                }
+            } catch (err) { 
+                console.error('❌ WhatsApp Network/CORS Error:', err);
+                note.textContent = '⚠ WhatsApp notification failed (CORS). Check console.';
             }
 
             // ── Success state ──

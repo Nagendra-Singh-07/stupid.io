@@ -42,10 +42,12 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question })
       })
+      if (!res.ok) throw new Error(`Backend returned ${res.status}: ${res.statusText}`);
       const data = await res.json()
       setChatHistory(prev => prev.map((c, i) => i === prev.length - 1 ? { ...c, a: data.answer } : c))
     } catch (err) {
-      setChatHistory(prev => prev.map((c, i) => i === prev.length - 1 ? { ...c, a: 'Error: Could not connect to backend.' } : c))
+      console.error("AI Chat Error:", err);
+      setChatHistory(prev => prev.map((c, i) => i === prev.length - 1 ? { ...c, a: 'Error: Could not connect to the AI backend. Please ensure the server is running.' } : c))
     }
   }
 
